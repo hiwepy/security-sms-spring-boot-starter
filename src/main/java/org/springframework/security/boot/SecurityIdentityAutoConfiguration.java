@@ -10,7 +10,7 @@ import org.springframework.security.boot.biz.authentication.AuthenticatingFailur
 import org.springframework.security.boot.biz.authentication.AuthenticatingFailureRequestCounter;
 import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.biz.property.SessionFixationPolicy;
-import org.springframework.security.boot.biz.userdetails.BaseAuthenticationUserDetailsService;
+import org.springframework.security.boot.biz.userdetails.AuthcUserDetailsService;
 import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -115,8 +115,8 @@ public class SecurityIdentityAutoConfiguration{
 	
 	@Bean
 	public IdentityCodeAuthenticationProvider idcCodeAuthenticationProvider(
-			BaseAuthenticationUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-		return new IdentityCodeAuthenticationProvider(userDetailsService, passwordEncoder);
+			AuthcUserDetailsService authcUserDetailsService, PasswordEncoder passwordEncoder) {
+		return new IdentityCodeAuthenticationProvider(authcUserDetailsService, passwordEncoder);
 	}
 
 }

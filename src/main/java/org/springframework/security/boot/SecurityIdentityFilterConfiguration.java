@@ -59,9 +59,8 @@ public class SecurityIdentityFilterConfiguration {
 		private final UserDetailsService userDetailsService;
 		
     	private final SecurityIdentityProperties identityProperties;
+    	private final IdentityCodeAuthenticationEntryPoint authenticationEntryPoint;
     	private final IdentityCodeAuthenticationProvider authenticationProvider;
-	    private final IdentityCodeAuthenticationEntryPoint authenticationEntryPoint;
-	    private final IdentityCodeAuthenticationProcessingFilter authenticationProcessingFilter;
 	    private final IdentityCodeAuthenticationSuccessHandler authenticationSuccessHandler;
 	    private final IdentityCodeAuthenticationFailureHandler authenticationFailureHandler;
 	    
@@ -105,7 +104,6 @@ public class SecurityIdentityFilterConfiguration {
    			this.identityProperties = identityProperties;
    			this.authenticationEntryPoint = authenticationEntryPointProvider.getIfAvailable();
    			this.authenticationProvider = authenticationProvider.getIfAvailable();
-   			this.authenticationProcessingFilter = authenticationProcessingFilter.getIfAvailable();
    			this.authenticationSuccessHandler = authenticationSuccessHandler.getIfAvailable();
    			this.authenticationFailureHandler = authenticationFailureHandler.getIfAvailable();
    			
@@ -116,9 +114,9 @@ public class SecurityIdentityFilterConfiguration {
    			this.expiredSessionStrategy = expiredSessionStrategyProvider.getIfAvailable();
    			
    		}
-
+   		
    		@Bean
-   	    public IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter() {
+   	    public IdentityCodeAuthenticationProcessingFilter authenticationProcessingFilter() {
    	    	
    			IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter(
    					objectMapper);
@@ -184,7 +182,7 @@ public class SecurityIdentityFilterConfiguration {
    	    		.requestCache()
    	        	.requestCache(requestCache)
    	        	.and()
-   				.addFilterBefore(authenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);
+   				.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
    	        
    	        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
    	        

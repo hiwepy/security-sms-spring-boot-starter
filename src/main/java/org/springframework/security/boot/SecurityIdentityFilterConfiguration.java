@@ -1,9 +1,10 @@
 package org.springframework.security.boot;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -38,135 +39,162 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
-@AutoConfigureAfter(SecurityBizFilterAutoConfiguration.class)
-@ConditionalOnProperty(prefix = SecurityIdentityProperties.PREFIX, value = "enabled", havingValue = "true")
+@AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
 @EnableConfigurationProperties({ SecurityIdentityProperties.class })
-@Order(106)
-public class SecurityIdentityFilterConfiguration extends WebSecurityConfigurerAdapter  implements ApplicationEventPublisherAware {
-
-	private ApplicationEventPublisher eventPublisher;
-	
-	@Autowired
-	private SecurityIdentityProperties identityProperties;
-	@Autowired
-	private AuthenticationManager authenticationManager;
-	@Autowired
-	private ObjectMapper objectMapper;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	@Autowired
-	private RememberMeServices rememberMeServices;
-	@Autowired
-    private SessionRegistry sessionRegistry;
-	@Autowired
-	private UserDetailsService userDetailsService;
-	
-	@Autowired
-	@Qualifier("idcAuthenticatingFailureCounter")
-	private AuthenticatingFailureCounter idcAuthenticatingFailureCounter;
-	@Autowired
-	@Qualifier("idcSessionAuthenticationStrategy")
-	private SessionAuthenticationStrategy idcSessionAuthenticationStrategy;
-    @Autowired
-    @Qualifier("idcCsrfTokenRepository")
-	private CsrfTokenRepository idcCsrfTokenRepository;
-    @Autowired
-    @Qualifier("idcExpiredSessionStrategy")
-    private SessionInformationExpiredStrategy idcExpiredSessionStrategy;
-    @Autowired
-    @Qualifier("idcRequestCache")
-    private RequestCache idcRequestCache;
-    @Autowired
-    @Qualifier("idcInvalidSessionStrategy")
-    private InvalidSessionStrategy idcInvalidSessionStrategy;
-    @Autowired
-    @Qualifier("idcSecurityContextLogoutHandler") 
-    private SecurityContextLogoutHandler idcSecurityContextLogoutHandler;
-    @Autowired
-	private IdentityCodeAuthenticationSuccessHandler identityCodeAuthenticationSuccessHandler;
-	@Autowired
-	private IdentityCodeAuthenticationFailureHandler identityCodeAuthenticationFailureHandler;
-    @Autowired
-    private IdentityCodeAuthenticationProvider identityCodeAuthenticationProvider;
-    @Autowired
-    private IdentityCodeAuthenticationEntryPoint identityCodeAuthenticationEntryPoint;
-
-    @Bean
-    public IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter() {
+public class SecurityIdentityFilterConfiguration {
+    
+    @Configuration
+    @ConditionalOnProperty(prefix = SecurityIdentityProperties.PREFIX, value = "enabled", havingValue = "true")
+   	@EnableConfigurationProperties({ SecurityIdentityProperties.class, SecurityBizProperties.class })
+    @Order(106)
+   	static class IdentityWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter implements ApplicationEventPublisherAware {
     	
-		IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter(
-				objectMapper);
+    	private ApplicationEventPublisher eventPublisher;
+    	
+        private final AuthenticationManager authenticationManager;
+	    private final ObjectMapper objectMapper;
+	    private final PasswordEncoder passwordEncoder;
+	    private final RememberMeServices rememberMeServices;
+	    private final SessionRegistry sessionRegistry;
+		private final UserDetailsService userDetailsService;
 		
-		authcFilter.setAllowSessionCreation(identityProperties.getSessionMgt().isAllowSessionCreation());
-		authcFilter.setApplicationEventPublisher(eventPublisher);
-		authcFilter.setAuthenticationFailureHandler(identityCodeAuthenticationFailureHandler);
-		authcFilter.setAuthenticationManager(authenticationManager);
-		authcFilter.setAuthenticationSuccessHandler(identityCodeAuthenticationSuccessHandler);
-		authcFilter.setContinueChainBeforeSuccessfulAuthentication(identityProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication());
-		if (StringUtils.hasText(identityProperties.getAuthc().getLoginUrlPatterns())) {
-			authcFilter.setFilterProcessesUrl(identityProperties.getAuthc().getLoginUrlPatterns());
-		}
-		//authcFilter.setMessageSource(messageSource);
-		authcFilter.setMobileParameter(identityProperties.getAuthc().getMobileParameter());
-		authcFilter.setCodeParameter(identityProperties.getAuthc().getCodeParameter());
-		authcFilter.setPostOnly(identityProperties.getAuthc().isPostOnly());
-		authcFilter.setRememberMeServices(rememberMeServices);
-		authcFilter.setSessionAuthenticationStrategy(idcSessionAuthenticationStrategy);
-		
-        return authcFilter;
-    }
-	 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(identityCodeAuthenticationProvider)
-	    	.userDetailsService(userDetailsService)
-	    	.passwordEncoder(passwordEncoder);
-    }
+    	private final SecurityIdentityProperties identityProperties;
+    	private final IdentityCodeAuthenticationProvider authenticationProvider;
+	    private final IdentityCodeAuthenticationEntryPoint authenticationEntryPoint;
+	    private final IdentityCodeAuthenticationProcessingFilter authenticationProcessingFilter;
+	    private final IdentityCodeAuthenticationSuccessHandler authenticationSuccessHandler;
+	    private final IdentityCodeAuthenticationFailureHandler authenticationFailureHandler;
+	    
+	    private final InvalidSessionStrategy invalidSessionStrategy;
+    	private final RequestCache requestCache;
+		private final SecurityContextLogoutHandler securityContextLogoutHandler;
+		private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
+		private final SessionInformationExpiredStrategy expiredSessionStrategy;
+   		
+   		public IdentityWebSecurityConfigurerAdapter(
+   			
+   				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
+   				ObjectProvider<ObjectMapper> objectMapperProvider,
+   				ObjectProvider<PasswordEncoder> passwordEncoderProvider,
+   				ObjectProvider<SessionRegistry> sessionRegistryProvider,
+   				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
+   				ObjectProvider<UserDetailsService> userDetailsServiceProvider,
+   				SecurityIdentityProperties identityProperties,
+   				ObjectProvider<IdentityCodeAuthenticationEntryPoint> authenticationEntryPointProvider,
+   				ObjectProvider<IdentityCodeAuthenticationProvider> authenticationProvider,
+   				ObjectProvider<IdentityCodeAuthenticationProcessingFilter> authenticationProcessingFilter,
+   				ObjectProvider<IdentityCodeAuthenticationSuccessHandler> authenticationSuccessHandler,
+   				ObjectProvider<IdentityCodeAuthenticationFailureHandler> authenticationFailureHandler,
+   				
+   				@Qualifier("idcAuthenticatingFailureCounter") ObjectProvider<AuthenticatingFailureCounter> authenticatingFailureCounter,
+   				@Qualifier("idcCsrfTokenRepository") ObjectProvider<CsrfTokenRepository> csrfTokenRepositoryProvider,
+   				@Qualifier("idcInvalidSessionStrategy") ObjectProvider<InvalidSessionStrategy> invalidSessionStrategyProvider,
+				@Qualifier("idcRequestCache") ObjectProvider<RequestCache> requestCacheProvider,
+				@Qualifier("idcSecurityContextLogoutHandler")  ObjectProvider<SecurityContextLogoutHandler> securityContextLogoutHandlerProvider,
+				@Qualifier("idcSessionAuthenticationStrategy") ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider,
+				@Qualifier("idcExpiredSessionStrategy") ObjectProvider<SessionInformationExpiredStrategy> expiredSessionStrategyProvider
+				) {
+   			
+   			this.authenticationManager = authenticationManagerProvider.getIfAvailable();
+   			this.objectMapper = objectMapperProvider.getIfAvailable();
+   			this.passwordEncoder = passwordEncoderProvider.getIfAvailable();
+   			this.rememberMeServices = rememberMeServicesProvider.getIfAvailable();
+   			this.sessionRegistry = sessionRegistryProvider.getIfAvailable();
+   			this.userDetailsService = userDetailsServiceProvider.getIfAvailable();
+   			
+   			this.identityProperties = identityProperties;
+   			this.authenticationEntryPoint = authenticationEntryPointProvider.getIfAvailable();
+   			this.authenticationProvider = authenticationProvider.getIfAvailable();
+   			this.authenticationProcessingFilter = authenticationProcessingFilter.getIfAvailable();
+   			this.authenticationSuccessHandler = authenticationSuccessHandler.getIfAvailable();
+   			this.authenticationFailureHandler = authenticationFailureHandler.getIfAvailable();
+   			
+   			this.invalidSessionStrategy = invalidSessionStrategyProvider.getIfAvailable();
+   			this.requestCache = requestCacheProvider.getIfAvailable();
+   			this.securityContextLogoutHandler = securityContextLogoutHandlerProvider.getIfAvailable();
+   			this.sessionAuthenticationStrategy = sessionAuthenticationStrategyProvider.getIfAvailable();
+   			this.expiredSessionStrategy = expiredSessionStrategyProvider.getIfAvailable();
+   			
+   		}
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-    	
-    	http.csrf().disable(); // We don't need CSRF for JWT based authentication
-    	
-    	// Session 管理器配置参数
-    	SecuritySessionMgtProperties sessionMgt = identityProperties.getSessionMgt();
-    	// Session 注销配置参数
-    	SecurityLogoutProperties logout = identityProperties.getLogout();
-    	
-	    // Session 管理器配置
-    	http.sessionManagement()
-    		.enableSessionUrlRewriting(sessionMgt.isEnableSessionUrlRewriting())
-    		.invalidSessionStrategy(idcInvalidSessionStrategy)
-    		.invalidSessionUrl(identityProperties.getLogout().getLogoutUrl())
-    		.maximumSessions(sessionMgt.getMaximumSessions())
-    		.maxSessionsPreventsLogin(sessionMgt.isMaxSessionsPreventsLogin())
-    		.expiredSessionStrategy(idcExpiredSessionStrategy)
-			.expiredUrl(identityProperties.getLogout().getLogoutUrl())
-			.sessionRegistry(sessionRegistry)
-			.and()
-    		.sessionAuthenticationErrorUrl(identityProperties.getAuthc().getFailureUrl())
-    		.sessionAuthenticationFailureHandler(identityCodeAuthenticationFailureHandler)
-    		.sessionAuthenticationStrategy(idcSessionAuthenticationStrategy)
-    		.sessionCreationPolicy(sessionMgt.getCreationPolicy())
-    		// Session 注销配置
-    		.and()
-    		.logout()
-    		.addLogoutHandler(idcSecurityContextLogoutHandler)
-    		.clearAuthentication(logout.isClearAuthentication())
-        	// Request 缓存配置
-        	.and()
-    		.requestCache()
-        	.requestCache(idcRequestCache)
-        	.and()
-			.addFilterBefore(identityCodeAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
-        
-        http.exceptionHandling().authenticationEntryPoint(identityCodeAuthenticationEntryPoint);
-        
-    }
+   		@Bean
+   	    public IdentityCodeAuthenticationProcessingFilter identityCodeAuthenticationProcessingFilter() {
+   	    	
+   			IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter(
+   					objectMapper);
+   			
+   			authcFilter.setAllowSessionCreation(identityProperties.getSessionMgt().isAllowSessionCreation());
+   			authcFilter.setApplicationEventPublisher(eventPublisher);
+   			authcFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
+   			authcFilter.setAuthenticationManager(authenticationManager);
+   			authcFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+   			authcFilter.setContinueChainBeforeSuccessfulAuthentication(identityProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication());
+   			if (StringUtils.hasText(identityProperties.getAuthc().getLoginUrlPatterns())) {
+   				authcFilter.setFilterProcessesUrl(identityProperties.getAuthc().getLoginUrlPatterns());
+   			}
+   			//authcFilter.setMessageSource(messageSource);
+   			authcFilter.setMobileParameter(identityProperties.getAuthc().getMobileParameter());
+   			authcFilter.setCodeParameter(identityProperties.getAuthc().getCodeParameter());
+   			authcFilter.setPostOnly(identityProperties.getAuthc().isPostOnly());
+   			authcFilter.setRememberMeServices(rememberMeServices);
+   			authcFilter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
+   			
+   	        return authcFilter;
+   	    }
+   		
+   		@Override
+   	    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+   	        auth.authenticationProvider(authenticationProvider)
+   		    	.userDetailsService(userDetailsService)
+   		    	.passwordEncoder(passwordEncoder);
+   	    }
 
-	@Override
-	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-		this.eventPublisher = applicationEventPublisher;
-	}
+   	    @Override
+   	    protected void configure(HttpSecurity http) throws Exception {
+   	    	
+   	    	http.csrf().disable(); // We don't need CSRF for JWT based authentication
+   	    	
+   	    	// Session 管理器配置参数
+   	    	SecuritySessionMgtProperties sessionMgt = identityProperties.getSessionMgt();
+   	    	// Session 注销配置参数
+   	    	SecurityLogoutProperties logout = identityProperties.getLogout();
+   	    	
+   		    // Session 管理器配置
+   	    	http.sessionManagement()
+   	    		.enableSessionUrlRewriting(sessionMgt.isEnableSessionUrlRewriting())
+   	    		.invalidSessionStrategy(invalidSessionStrategy)
+   	    		.invalidSessionUrl(identityProperties.getLogout().getLogoutUrl())
+   	    		.maximumSessions(sessionMgt.getMaximumSessions())
+   	    		.maxSessionsPreventsLogin(sessionMgt.isMaxSessionsPreventsLogin())
+   	    		.expiredSessionStrategy(expiredSessionStrategy)
+   				.expiredUrl(identityProperties.getLogout().getLogoutUrl())
+   				.sessionRegistry(sessionRegistry)
+   				.and()
+   	    		.sessionAuthenticationErrorUrl(identityProperties.getAuthc().getFailureUrl())
+   	    		.sessionAuthenticationFailureHandler(authenticationFailureHandler)
+   	    		.sessionAuthenticationStrategy(sessionAuthenticationStrategy)
+   	    		.sessionCreationPolicy(sessionMgt.getCreationPolicy())
+   	    		// Session 注销配置
+   	    		.and()
+   	    		.logout()
+   	    		.addLogoutHandler(securityContextLogoutHandler)
+   	    		.clearAuthentication(logout.isClearAuthentication())
+   	        	// Request 缓存配置
+   	        	.and()
+   	    		.requestCache()
+   	        	.requestCache(requestCache)
+   	        	.and()
+   				.addFilterBefore(authenticationProcessingFilter, UsernamePasswordAuthenticationFilter.class);
+   	        
+   	        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+   	        
+   	    }
+   	    
+   		@Override
+   		public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+   			this.eventPublisher = applicationEventPublisher;
+   		}
+
+   	}
 
 }

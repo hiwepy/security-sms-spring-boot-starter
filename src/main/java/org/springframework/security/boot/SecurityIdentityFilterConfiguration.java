@@ -23,6 +23,7 @@ import org.springframework.security.boot.identity.authentication.IdentityCodeAut
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -187,6 +188,11 @@ public class SecurityIdentityFilterConfiguration {
    	        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
    	        
    	    }
+   	    
+   	    @Override
+	    public void configure(WebSecurity web) throws Exception {
+	    	web.ignoring().antMatchers(identityProperties.getAuthc().getLoginUrlPatterns());
+	    }
    	    
    		@Override
    		public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {

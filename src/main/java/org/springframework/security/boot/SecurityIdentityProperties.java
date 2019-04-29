@@ -5,7 +5,6 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityCaptchaProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
-import org.springframework.security.boot.biz.property.SecuritySessionMgtProperties;
 import org.springframework.security.boot.identity.property.SecurityIdentityAuthcProperties;
 
 @ConfigurationProperties(prefix = SecurityIdentityProperties.PREFIX)
@@ -23,8 +22,6 @@ public class SecurityIdentityProperties {
 	private SecurityLogoutProperties logout = new SecurityLogoutProperties();
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();
-	@NestedConfigurationProperty
-	private SecuritySessionMgtProperties sessionMgt = new SecuritySessionMgtProperties();
 	
 	public boolean isEnabled() {
 		return enabled;
@@ -64,14 +61,6 @@ public class SecurityIdentityProperties {
 
 	public void setRedirect(SecurityRedirectProperties redirect) {
 		this.redirect = redirect;
-	}
-
-	public SecuritySessionMgtProperties getSessionMgt() {
-		return sessionMgt;
-	}
-
-	public void setSessionMgt(SecuritySessionMgtProperties sessionMgt) {
-		this.sessionMgt = sessionMgt;
 	}
 
 }

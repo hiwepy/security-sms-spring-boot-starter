@@ -35,7 +35,7 @@ public class SecurityIdentityFilterConfiguration {
     @Configuration
     @ConditionalOnProperty(prefix = SecurityIdentityProperties.PREFIX, value = "enabled", havingValue = "true")
    	@EnableConfigurationProperties({ SecurityIdentityProperties.class, SecurityBizProperties.class })
-    @Order(106)
+    @Order(104)
    	static class IdentityWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter implements ApplicationEventPublisherAware {
     	
     	private ApplicationEventPublisher eventPublisher;

@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
-import org.springframework.security.boot.biz.userdetails.AuthcUserDetailsService;
+import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationEntryPoint;
 import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationFailureHandler;
 import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationProvider;
@@ -49,8 +49,8 @@ public class SecurityIdentityAutoConfiguration{
 	
 	@Bean
 	public IdentityCodeAuthenticationProvider idcCodeAuthenticationProvider(
-			AuthcUserDetailsService authcUserDetailsService, PasswordEncoder passwordEncoder) {
-		return new IdentityCodeAuthenticationProvider(authcUserDetailsService, passwordEncoder);
+			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {
+		return new IdentityCodeAuthenticationProvider(userDetailsService, passwordEncoder);
 	}
 
 	@Bean

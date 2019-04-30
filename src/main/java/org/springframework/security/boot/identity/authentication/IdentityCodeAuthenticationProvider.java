@@ -6,8 +6,8 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.boot.biz.userdetails.AuthcUserDetailsService;
 import org.springframework.security.boot.biz.userdetails.SecurityPrincipal;
+import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.SpringSecurityMessageSource;
@@ -22,11 +22,11 @@ public class IdentityCodeAuthenticationProvider implements AuthenticationProvide
 	protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 	private final Logger logger = LoggerFactory.getLogger(getClass());
     private final PasswordEncoder passwordEncoder;
-    private final AuthcUserDetailsService authcUserDetailsService;
+    private final UserDetailsServiceAdapter userDetailsService;
     private UserDetailsChecker userDetailsChecker = new AccountStatusUserDetailsChecker();
     
-    public IdentityCodeAuthenticationProvider(final AuthcUserDetailsService authcUserDetailsService, final PasswordEncoder passwordEncoder) {
-        this.authcUserDetailsService = authcUserDetailsService;
+    public IdentityCodeAuthenticationProvider(final UserDetailsServiceAdapter userDetailsService, final PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -60,7 +60,7 @@ public class IdentityCodeAuthenticationProvider implements AuthenticationProvide
 			throw new BadCredentialsException("No credentials found in request.");
 		}
 		
-		UserDetails ud = getAuthcUserDetailsService().loadUserDetails(authentication);
+		UserDetails ud = getUserDetailsService().loadUserDetails(authentication);
         if (!passwordEncoder.matches(code, ud.getPassword())) {
             throw new BadCredentialsException("Authentication Failed. Code not valid.");
         }
@@ -96,9 +96,8 @@ public class IdentityCodeAuthenticationProvider implements AuthenticationProvide
 		return passwordEncoder;
 	}
 
-	public AuthcUserDetailsService getAuthcUserDetailsService() {
-		return authcUserDetailsService;
+	public UserDetailsServiceAdapter getUserDetailsService() {
+		return userDetailsService;
 	}
-	
     
 }

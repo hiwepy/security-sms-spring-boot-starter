@@ -12,10 +12,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationFailureHandler;
+import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
+import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
 import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationProcessingFilter;
 import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationProvider;
-import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationSuccessHandler;
 import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,8 +46,8 @@ public class SecurityIdentityFilterConfiguration {
 		
     	private final SecurityIdentityProperties identityProperties;
     	private final IdentityCodeAuthenticationProvider authenticationProvider;
-	    private final IdentityCodeAuthenticationSuccessHandler authenticationSuccessHandler;
-	    private final IdentityCodeAuthenticationFailureHandler authenticationFailureHandler;
+    	private final PostRequestAuthenticationSuccessHandler authenticationSuccessHandler;
+ 	    private final PostRequestAuthenticationFailureHandler authenticationFailureHandler;
 	    
 		private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
    		
@@ -60,8 +60,8 @@ public class SecurityIdentityFilterConfiguration {
    				SecurityIdentityProperties identityProperties,
    				ObjectProvider<IdentityCodeAuthenticationProvider> authenticationProvider,
    				ObjectProvider<IdentityCodeAuthenticationProcessingFilter> authenticationProcessingFilter,
-   				ObjectProvider<IdentityCodeAuthenticationSuccessHandler> authenticationSuccessHandler,
-   				ObjectProvider<IdentityCodeAuthenticationFailureHandler> authenticationFailureHandler,
+   				@Qualifier("idcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler,
+   				@Qualifier("idcAuthenticationFailureHandler") ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
    				
 				@Qualifier("idcSessionAuthenticationStrategy") ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider
 			) {

@@ -25,9 +25,11 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @Configuration
 @AutoConfigureBefore(SecurityBizAutoConfiguration.class)
 @ConditionalOnProperty(prefix = SecurityIdentityProperties.PREFIX, value = "enabled", havingValue = "true")
-@EnableConfigurationProperties({ SecurityIdentityProperties.class })
+@EnableConfigurationProperties({ SecurityBizProperties.class, SecurityIdentityProperties.class })
 public class SecurityIdentityAutoConfiguration{
 
+	@Autowired
+	private SecurityBizProperties bizProperties;
 	@Autowired
 	private SecurityIdentityProperties identityProperties;
 	
@@ -41,22 +43,34 @@ public class SecurityIdentityAutoConfiguration{
 	public PostRequestAuthenticationSuccessHandler idcAuthenticationSuccessHandler(
 			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
 			@Autowired(required = false) List<MatchedAuthenticationSuccessHandler> successHandlers) {
+		
 		PostRequestAuthenticationSuccessHandler successHandler = new PostRequestAuthenticationSuccessHandler(
-				authenticationListeners, successHandlers, identityProperties.getAuthc().getSuccessUrl());
+				authenticationListeners, successHandlers);
+		
+		successHandler.setDefaultTargetUrl(identityProperties.getAuthc().getSuccessUrl());
+		successHandler.setStateless(bizProperties.isStateless());
 		successHandler.setTargetUrlParameter(identityProperties.getAuthc().getTargetUrlParameter());
 		successHandler.setUseReferer(identityProperties.getAuthc().isUseReferer());
+		
 		return successHandler;
+		
 	}
 	
 	@Bean("idcAuthenticationFailureHandler")
 	public PostRequestAuthenticationFailureHandler idcAuthenticationFailureHandler(
 			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
 			@Autowired(required = false) List<MatchedAuthenticationFailureHandler> failureHandlers) {
+		
 		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(
-				authenticationListeners, failureHandlers, identityProperties.getAuthc().getFailureUrl());
+				authenticationListeners, failureHandlers);
+		
 		failureHandler.setAllowSessionCreation(identityProperties.getAuthc().isAllowSessionCreation());
+		failureHandler.setDefaultFailureUrl(identityProperties.getAuthc().getFailureUrl());
+		failureHandler.setStateless(bizProperties.isStateless());
 		failureHandler.setUseForward(identityProperties.getAuthc().isUseForward());
+		
 		return failureHandler;
+		
 	}
 	
 	@Bean

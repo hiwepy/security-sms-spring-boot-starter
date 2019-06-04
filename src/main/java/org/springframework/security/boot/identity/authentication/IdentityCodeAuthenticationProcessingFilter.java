@@ -69,7 +69,7 @@ public class IdentityCodeAuthenticationProcessingFilter extends AbstractAuthenti
 
 			AbstractAuthenticationToken authRequest = null;
 			// Post && JSON
-			if(WebUtils.isAjaxResponse(request)) {
+			if(WebUtils.isObjectRequest(request)) {
 				
 				IdentityCodeRequest loginRequest = objectMapper.readValue(request.getReader(), IdentityCodeRequest.class);
 		 		authRequest = this.authenticationToken( loginRequest.getMobile(), loginRequest.getCode());

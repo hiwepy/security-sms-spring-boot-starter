@@ -31,7 +31,7 @@ public class IdentityCodeMatchedAuthenticationFailureHandler implements MatchedA
 	 
 	@Override
 	public boolean supports(AuthenticationException e) {
-		return SubjectUtils.supports(e.getClass(), IdentityCodeNotFoundException.class,
+		return SubjectUtils.isAssignableFrom(e.getClass(), IdentityCodeNotFoundException.class,
 				IdentityCodeExpiredException.class, IdentityCodeIncorrectException.class,
 				IdentityCodeInvalidException.class);
 	}

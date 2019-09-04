@@ -64,7 +64,7 @@ public class SecurityIdentityFilterConfiguration {
    				@Qualifier("idcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler,
    				@Qualifier("idcAuthenticationFailureHandler") ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
    				
-				@Qualifier("idcSessionAuthenticationStrategy") ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider
+				ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider
 			) {
    			
    			this.authenticationManager = authenticationManagerProvider.getIfAvailable();

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +18,6 @@ import org.springframework.security.boot.identity.authentication.IdentityCodeAut
 import org.springframework.security.boot.identity.authentication.IdentityCodeMatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.identity.authentication.IdentityCodeMatchedAuthenticationFailureHandler;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 @Configuration
 @AutoConfigureBefore(SecurityBizAutoConfiguration.class)
@@ -32,12 +29,6 @@ public class SecurityIdentityAutoConfiguration{
 	private SecurityBizProperties bizProperties;
 	@Autowired
 	private SecurityIdentityProperties identityProperties;
-	
-	@Bean("idcSessionAuthenticationStrategy")
-	@ConditionalOnMissingBean(name = "idcSessionAuthenticationStrategy")
-	public SessionAuthenticationStrategy idcSessionAuthenticationStrategy() {
-		return new NullAuthenticatedSessionStrategy();
-	}
 	
 	@Bean("idcAuthenticationSuccessHandler")
 	public PostRequestAuthenticationSuccessHandler idcAuthenticationSuccessHandler(

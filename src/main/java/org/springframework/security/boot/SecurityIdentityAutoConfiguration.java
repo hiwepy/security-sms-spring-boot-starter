@@ -64,7 +64,7 @@ public class SecurityIdentityAutoConfiguration{
 		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(
 				authenticationListeners, failureHandlers);
 		
-		failureHandler.setAllowSessionCreation(identityProperties.getAuthc().isAllowSessionCreation());
+		failureHandler.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
 		failureHandler.setDefaultFailureUrl(identityProperties.getAuthc().getFailureUrl());
 		failureHandler.setStateless(bizProperties.isStateless());
 		failureHandler.setUseForward(identityProperties.getAuthc().isUseForward());

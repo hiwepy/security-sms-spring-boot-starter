@@ -43,7 +43,7 @@ public class SecurityIdentityFilterConfiguration {
         private final AuthenticationManager authenticationManager;
 	    private final ObjectMapper objectMapper;
 	    private final RememberMeServices rememberMeServices;
-		
+	    private final SecurityBizProperties bizProperties;
     	private final SecurityIdentityProperties identityProperties;
     	private final IdentityCodeAuthenticationProvider authenticationProvider;
     	private final PostRequestAuthenticationSuccessHandler authenticationSuccessHandler;
@@ -57,6 +57,7 @@ public class SecurityIdentityFilterConfiguration {
    				ObjectProvider<ObjectMapper> objectMapperProvider,
    				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
    				
+   				SecurityBizProperties bizProperties,
    				SecurityIdentityProperties identityProperties,
    				ObjectProvider<IdentityCodeAuthenticationProvider> authenticationProvider,
    				ObjectProvider<IdentityCodeAuthenticationProcessingFilter> authenticationProcessingFilter,
@@ -69,7 +70,7 @@ public class SecurityIdentityFilterConfiguration {
    			this.authenticationManager = authenticationManagerProvider.getIfAvailable();
    			this.objectMapper = objectMapperProvider.getIfAvailable();
    			this.rememberMeServices = rememberMeServicesProvider.getIfAvailable();
-   			
+   			this.bizProperties = bizProperties;
    			this.identityProperties = identityProperties;
    			this.authenticationProvider = authenticationProvider.getIfAvailable();
    			this.authenticationSuccessHandler = authenticationSuccessHandler.getIfAvailable();
@@ -85,7 +86,7 @@ public class SecurityIdentityFilterConfiguration {
    			IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter(
    					objectMapper);
    			
-   			authcFilter.setAllowSessionCreation(identityProperties.getAuthc().isAllowSessionCreation());
+   			authcFilter.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
    			authcFilter.setApplicationEventPublisher(eventPublisher);
    			authcFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
    			authcFilter.setAuthenticationManager(authenticationManager);

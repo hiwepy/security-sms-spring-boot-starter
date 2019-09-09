@@ -53,18 +53,18 @@ public class SecurityIdentityFilterConfiguration {
    		
    		public IdentityWebSecurityConfigurerAdapter(
    			
-   				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
-   				ObjectProvider<ObjectMapper> objectMapperProvider,
-   				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
-   				
    				SecurityBizProperties bizProperties,
    				SecurityIdentityProperties identityProperties,
+
+   				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
    				ObjectProvider<IdentityCodeAuthenticationProvider> authenticationProvider,
    				ObjectProvider<IdentityCodeAuthenticationProcessingFilter> authenticationProcessingFilter,
-   				@Qualifier("idcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler,
-   				@Qualifier("idcAuthenticationFailureHandler") ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
-   				
-				ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider
+   				ObjectProvider<ObjectMapper> objectMapperProvider,
+   				ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
+   				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
+				ObjectProvider<SessionAuthenticationStrategy> sessionAuthenticationStrategyProvider,
+				
+				@Qualifier("idcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler
 			) {
    			
    			this.authenticationManager = authenticationManagerProvider.getIfAvailable();

@@ -9,9 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.boot.biz.authentication.AuthenticationListener;
-import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
-import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
 import org.springframework.security.boot.biz.userdetails.UserDetailsServiceAdapter;
 import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationProvider;
@@ -44,23 +42,6 @@ public class SecurityIdentityAutoConfiguration{
 		successHandler.setUseReferer(identityProperties.getAuthc().isUseReferer());
 		
 		return successHandler;
-		
-	}
-	
-	@Bean("idcAuthenticationFailureHandler")
-	public PostRequestAuthenticationFailureHandler idcAuthenticationFailureHandler(
-			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
-			@Autowired(required = false) List<MatchedAuthenticationFailureHandler> failureHandlers) {
-		
-		PostRequestAuthenticationFailureHandler failureHandler = new PostRequestAuthenticationFailureHandler(
-				authenticationListeners, failureHandlers);
-		
-		failureHandler.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
-		failureHandler.setDefaultFailureUrl(identityProperties.getAuthc().getFailureUrl());
-		failureHandler.setStateless(bizProperties.isStateless());
-		failureHandler.setUseForward(identityProperties.getAuthc().isUseForward());
-		
-		return failureHandler;
 		
 	}
 	

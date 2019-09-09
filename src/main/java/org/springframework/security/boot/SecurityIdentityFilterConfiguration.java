@@ -92,8 +92,8 @@ public class SecurityIdentityFilterConfiguration {
    			authcFilter.setAuthenticationManager(authenticationManager);
    			authcFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
    			authcFilter.setContinueChainBeforeSuccessfulAuthentication(identityProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication());
-   			if (StringUtils.hasText(identityProperties.getAuthc().getLoginUrlPatterns())) {
-   				authcFilter.setFilterProcessesUrl(identityProperties.getAuthc().getLoginUrlPatterns());
+   			if (StringUtils.hasText(identityProperties.getAuthc().getLoginUrl())) {
+   				authcFilter.setFilterProcessesUrl(identityProperties.getAuthc().getLoginUrl());
    			}
    			//authcFilter.setMessageSource(messageSource);
    			authcFilter.setMobileParameter(identityProperties.getAuthc().getMobileParameter());
@@ -120,7 +120,7 @@ public class SecurityIdentityFilterConfiguration {
    	    
    	    @Override
 	    public void configure(WebSecurity web) throws Exception {
-	    	web.ignoring().antMatchers(identityProperties.getAuthc().getLoginUrlPatterns());
+	    	web.ignoring().antMatchers(identityProperties.getAuthc().getLoginUrl());
 	    }
    	    
    		@Override

@@ -76,7 +76,6 @@ public class SecurityIdentityFilterConfiguration {
    			
    		}
    		
-   		@Bean
    	    public IdentityCodeAuthenticationProcessingFilter authenticationProcessingFilter() {
    	    	
    			IdentityCodeAuthenticationProcessingFilter authenticationFilter = new IdentityCodeAuthenticationProcessingFilter(

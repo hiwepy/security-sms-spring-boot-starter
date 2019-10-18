@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -16,7 +15,6 @@ import org.springframework.security.boot.biz.authentication.PostRequestAuthentic
 import org.springframework.security.boot.biz.authentication.PostRequestAuthenticationSuccessHandler;
 import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationProcessingFilter;
 import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationProvider;
-import org.springframework.security.boot.utils.StringUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -36,9 +34,7 @@ public class SecurityIdentityFilterConfiguration {
     @ConditionalOnProperty(prefix = SecurityIdentityProperties.PREFIX, value = "enabled", havingValue = "true")
    	@EnableConfigurationProperties({ SecurityIdentityProperties.class, SecurityBizProperties.class })
     @Order(104)
-   	static class IdentityWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter implements ApplicationEventPublisherAware {
-    	
-    	private ApplicationEventPublisher eventPublisher;
+   	static class IdentityWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
     	
         private final AuthenticationManager authenticationManager;
 	    private final ObjectMapper objectMapper;
@@ -83,26 +79,29 @@ public class SecurityIdentityFilterConfiguration {
    		@Bean
    	    public IdentityCodeAuthenticationProcessingFilter authenticationProcessingFilter() {
    	    	
-   			IdentityCodeAuthenticationProcessingFilter authcFilter = new IdentityCodeAuthenticationProcessingFilter(
+   			IdentityCodeAuthenticationProcessingFilter authenticationFilter = new IdentityCodeAuthenticationProcessingFilter(
    					objectMapper);
    			
-   			authcFilter.setAllowSessionCreation(bizProperties.getSessionMgt().isAllowSessionCreation());
-   			authcFilter.setApplicationEventPublisher(eventPublisher);
-   			authcFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
-   			authcFilter.setAuthenticationManager(authenticationManager);
-   			authcFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
-   			authcFilter.setContinueChainBeforeSuccessfulAuthentication(identityProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication());
-   			if (StringUtils.hasText(identityProperties.getAuthc().getPathPattern())) {
-   				authcFilter.setFilterProcessesUrl(identityProperties.getAuthc().getPathPattern());
-   			}
-   			//authcFilter.setMessageSource(messageSource);
-   			authcFilter.setMobileParameter(identityProperties.getAuthc().getMobileParameter());
-   			authcFilter.setCodeParameter(identityProperties.getAuthc().getCodeParameter());
-   			authcFilter.setPostOnly(identityProperties.getAuthc().isPostOnly());
-   			authcFilter.setRememberMeServices(rememberMeServices);
-   			authcFilter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
-   			
-   	        return authcFilter;
+   			/**
+			 * 批量设置参数
+			 */
+			PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+			
+			map.from(bizProperties.getSessionMgt().isAllowSessionCreation()).to(authenticationFilter::setAllowSessionCreation);
+			
+			map.from(authenticationManager).to(authenticationFilter::setAuthenticationManager);
+			map.from(authenticationSuccessHandler).to(authenticationFilter::setAuthenticationSuccessHandler);
+			map.from(authenticationFailureHandler).to(authenticationFilter::setAuthenticationFailureHandler);
+			
+			map.from(identityProperties.getAuthc().getPathPattern()).to(authenticationFilter::setFilterProcessesUrl);
+			map.from(identityProperties.getAuthc().getMobileParameter()).to(authenticationFilter::setMobileParameter);
+			map.from(identityProperties.getAuthc().getCodeParameter()).to(authenticationFilter::setCodeParameter);
+			
+			map.from(rememberMeServices).to(authenticationFilter::setRememberMeServices);
+			map.from(sessionAuthenticationStrategy).to(authenticationFilter::setSessionAuthenticationStrategy);
+			map.from(identityProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication()).to(authenticationFilter::setContinueChainBeforeSuccessfulAuthentication);
+			
+   	        return authenticationFilter;
    	    }
    		
    		@Override
@@ -122,11 +121,6 @@ public class SecurityIdentityFilterConfiguration {
 	    public void configure(WebSecurity web) throws Exception {
 	    	web.ignoring().antMatchers(identityProperties.getAuthc().getPathPattern());
 	    }
-   	    
-   		@Override
-   		public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-   			this.eventPublisher = applicationEventPublisher;
-   		}
 
    	}
 

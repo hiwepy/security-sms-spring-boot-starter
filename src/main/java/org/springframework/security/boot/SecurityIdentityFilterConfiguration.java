@@ -104,12 +104,12 @@ public class SecurityIdentityFilterConfiguration {
    	    }
    		
    		@Override
-   	    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		public void configure(AuthenticationManagerBuilder auth) throws Exception {
    	        auth.authenticationProvider(authenticationProvider);
    	    }
 
    	    @Override
-   	    protected void configure(HttpSecurity http) throws Exception {
+		public void configure(HttpSecurity http) throws Exception {
    	    	
    	    	http.csrf().disable(); // We don't need CSRF for Mobile Code based authentication
    	    	http.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);

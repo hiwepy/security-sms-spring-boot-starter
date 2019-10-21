@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +17,6 @@ import org.springframework.security.boot.identity.authentication.IdentityCodeAut
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -34,7 +32,7 @@ public class SecurityIdentityFilterConfiguration {
     @ConditionalOnProperty(prefix = SecurityIdentityProperties.PREFIX, value = "enabled", havingValue = "true")
    	@EnableConfigurationProperties({ SecurityIdentityProperties.class, SecurityBizProperties.class })
     @Order(104)
-   	static class IdentityWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+   	static class IdentityWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	
         private final AuthenticationManager authenticationManager;
 	    private final ObjectMapper objectMapper;
@@ -62,6 +60,8 @@ public class SecurityIdentityFilterConfiguration {
 				
 				@Qualifier("idcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler
 			) {
+   			
+   			super(bizProperties);
    			
    			this.authenticationManager = authenticationManagerProvider.getIfAvailable();
    			this.objectMapper = objectMapperProvider.getIfAvailable();
@@ -106,19 +106,23 @@ public class SecurityIdentityFilterConfiguration {
    		@Override
 		public void configure(AuthenticationManagerBuilder auth) throws Exception {
    	        auth.authenticationProvider(authenticationProvider);
+   	        super.configure(auth);
    	    }
 
    	    @Override
 		public void configure(HttpSecurity http) throws Exception {
    	    	
    	    	http.csrf().disable(); // We don't need CSRF for Mobile Code based authentication
-   	    	http.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+   	    	http.antMatcher(identityProperties.getAuthc().getPathPattern())
+   	    		.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+   	    
+   	    	super.configure(http);
    	    	
    	    }
    	    
    	    @Override
 	    public void configure(WebSecurity web) throws Exception {
-	    	web.ignoring().antMatchers(identityProperties.getAuthc().getPathPattern());
+	    	super.configure(web);
 	    }
 
    	}

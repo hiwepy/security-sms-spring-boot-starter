@@ -18,9 +18,6 @@ package org.springframework.security.boot;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.security.boot.biz.property.SecurityAuthcProperties;
-import org.springframework.security.boot.biz.property.SecurityHeaderCrosProperties;
-import org.springframework.security.boot.biz.property.SecurityHeaderCsrfProperties;
-import org.springframework.security.boot.biz.property.SecurityHeadersProperties;
 import org.springframework.security.boot.biz.property.SecurityLogoutProperties;
 import org.springframework.security.boot.biz.property.SecurityRedirectProperties;
 import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationProcessingFilter;
@@ -41,15 +38,6 @@ public class SecurityIdentityAuthcProperties extends SecurityAuthcProperties {
 	private String mobileParameter = IdentityCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_MOBILE_KEY;
 	/** the code parameter name. Defaults to "password". */
     private String codeParameter = IdentityCodeAuthenticationProcessingFilter.SPRING_SECURITY_FORM_CODE_KEY;
-	
-    @NestedConfigurationProperty
-	private SecurityHeaderCrosProperties cros = new SecurityHeaderCrosProperties();
-	
-	@NestedConfigurationProperty
-	private SecurityHeaderCsrfProperties csrf = new SecurityHeaderCsrfProperties();
-	
-	@NestedConfigurationProperty
-	private SecurityHeadersProperties headers = new SecurityHeadersProperties();
 	
 	@NestedConfigurationProperty
 	private SecurityRedirectProperties redirect = new SecurityRedirectProperties();

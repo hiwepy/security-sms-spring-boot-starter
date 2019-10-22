@@ -25,7 +25,6 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -60,7 +59,6 @@ public class SecurityIdentityFilterConfiguration {
    				ObjectProvider<IdentityCodeAuthenticationProvider> authenticationProvider,
    				ObjectProvider<IdentityCodeAuthenticationProcessingFilter> authenticationProcessingFilter,
    				ObjectProvider<CsrfTokenRepository> csrfTokenRepositoryProvider,
-   				ObjectProvider<CorsConfigurationSource> configurationSourceProvider,
    				ObjectProvider<ObjectMapper> objectMapperProvider,
    				ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
    				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
@@ -69,7 +67,7 @@ public class SecurityIdentityFilterConfiguration {
 				@Qualifier("idcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler
 			) {
    			
-   			super(bizProperties, csrfTokenRepositoryProvider.getIfAvailable(), configurationSourceProvider.getIfAvailable());
+   			super(bizProperties, csrfTokenRepositoryProvider.getIfAvailable());
    			
    			this.authenticationManager = authenticationManagerProvider.getIfAvailable();
    			this.objectMapper = objectMapperProvider.getIfAvailable();
@@ -133,7 +131,7 @@ public class SecurityIdentityFilterConfiguration {
    	    	http.antMatcher(authcProperties.getPathPattern())
    	    		.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
-   	    	super.configure(http, authcProperties.getCros());
+   	    	super.configure(http, authcProperties.getCors());
    	    	super.configure(http, authcProperties.getCsrf());
    	    	super.configure(http, authcProperties.getHeaders());
 	    	super.configure(http);

@@ -23,23 +23,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableConfigurationProperties({ SecurityBizProperties.class, SecurityIdentityProperties.class })
 public class SecurityIdentityAutoConfiguration{
 
-	@Autowired
-	private SecurityBizProperties bizProperties;
-	@Autowired
-	private SecurityIdentityProperties identityProperties;
-	
 	@Bean("idcAuthenticationSuccessHandler")
 	public PostRequestAuthenticationSuccessHandler idcAuthenticationSuccessHandler(
+			SecurityBizProperties bizProperties,
+			SecurityIdentityAuthcProperties identityProperties,
 			@Autowired(required = false) List<AuthenticationListener> authenticationListeners,
 			@Autowired(required = false) List<MatchedAuthenticationSuccessHandler> successHandlers) {
 		
 		PostRequestAuthenticationSuccessHandler successHandler = new PostRequestAuthenticationSuccessHandler(
 				authenticationListeners, successHandlers);
 		
-		successHandler.setDefaultTargetUrl(identityProperties.getAuthc().getSuccessUrl());
+		successHandler.setDefaultTargetUrl(identityProperties.getSuccessUrl());
 		successHandler.setStateless(bizProperties.isStateless());
-		successHandler.setTargetUrlParameter(identityProperties.getAuthc().getTargetUrlParameter());
-		successHandler.setUseReferer(identityProperties.getAuthc().isUseReferer());
+		successHandler.setTargetUrlParameter(identityProperties.getTargetUrlParameter());
+		successHandler.setUseReferer(identityProperties.isUseReferer());
 		
 		return successHandler;
 		

@@ -24,6 +24,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -42,7 +44,7 @@ public class SecurityIdentityFilterConfiguration {
 	    private final ObjectMapper objectMapper;
 	    private final RememberMeServices rememberMeServices;
 	    private final SecurityBizProperties bizProperties;
-    	private final SecurityIdentityProperties identityProperties;
+    	private final SecurityIdentityAuthcProperties authcProperties;
     	private final IdentityCodeAuthenticationProvider authenticationProvider;
     	private final PostRequestAuthenticationSuccessHandler authenticationSuccessHandler;
  	    private final PostRequestAuthenticationFailureHandler authenticationFailureHandler;
@@ -52,11 +54,13 @@ public class SecurityIdentityFilterConfiguration {
    		public IdentityWebSecurityConfigurerAdapter(
    			
    				SecurityBizProperties bizProperties,
-   				SecurityIdentityProperties identityProperties,
+   				SecurityIdentityAuthcProperties identityAuthcProperties,
 
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
    				ObjectProvider<IdentityCodeAuthenticationProvider> authenticationProvider,
    				ObjectProvider<IdentityCodeAuthenticationProcessingFilter> authenticationProcessingFilter,
+   				ObjectProvider<CsrfTokenRepository> csrfTokenRepositoryProvider,
+   				ObjectProvider<CorsConfigurationSource> configurationSourceProvider,
    				ObjectProvider<ObjectMapper> objectMapperProvider,
    				ObjectProvider<PostRequestAuthenticationFailureHandler> authenticationFailureHandler,
    				ObjectProvider<RememberMeServices> rememberMeServicesProvider,
@@ -65,13 +69,13 @@ public class SecurityIdentityFilterConfiguration {
 				@Qualifier("idcAuthenticationSuccessHandler") ObjectProvider<PostRequestAuthenticationSuccessHandler> authenticationSuccessHandler
 			) {
    			
-   			super(bizProperties);
+   			super(bizProperties, csrfTokenRepositoryProvider.getIfAvailable(), configurationSourceProvider.getIfAvailable());
    			
    			this.authenticationManager = authenticationManagerProvider.getIfAvailable();
    			this.objectMapper = objectMapperProvider.getIfAvailable();
    			this.rememberMeServices = rememberMeServicesProvider.getIfAvailable();
    			this.bizProperties = bizProperties;
-   			this.identityProperties = identityProperties;
+   			this.authcProperties = identityAuthcProperties;
    			this.authenticationProvider = authenticationProvider.getIfAvailable();
    			this.authenticationSuccessHandler = authenticationSuccessHandler.getIfAvailable();
    			this.authenticationFailureHandler = authenticationFailureHandler.getIfAvailable();
@@ -105,13 +109,13 @@ public class SecurityIdentityFilterConfiguration {
 			map.from(authenticationSuccessHandler).to(authenticationFilter::setAuthenticationSuccessHandler);
 			map.from(authenticationFailureHandler).to(authenticationFilter::setAuthenticationFailureHandler);
 			
-			map.from(identityProperties.getAuthc().getPathPattern()).to(authenticationFilter::setFilterProcessesUrl);
-			map.from(identityProperties.getAuthc().getMobileParameter()).to(authenticationFilter::setMobileParameter);
-			map.from(identityProperties.getAuthc().getCodeParameter()).to(authenticationFilter::setCodeParameter);
+			map.from(authcProperties.getPathPattern()).to(authenticationFilter::setFilterProcessesUrl);
+			map.from(authcProperties.getMobileParameter()).to(authenticationFilter::setMobileParameter);
+			map.from(authcProperties.getCodeParameter()).to(authenticationFilter::setCodeParameter);
 			
 			map.from(rememberMeServices).to(authenticationFilter::setRememberMeServices);
 			map.from(sessionAuthenticationStrategy).to(authenticationFilter::setSessionAuthenticationStrategy);
-			map.from(identityProperties.getAuthc().isContinueChainBeforeSuccessfulAuthentication()).to(authenticationFilter::setContinueChainBeforeSuccessfulAuthentication);
+			map.from(authcProperties.isContinueChainBeforeSuccessfulAuthentication()).to(authenticationFilter::setContinueChainBeforeSuccessfulAuthentication);
 			
    	        return authenticationFilter;
    	    }
@@ -126,10 +130,13 @@ public class SecurityIdentityFilterConfiguration {
 		public void configure(HttpSecurity http) throws Exception {
    	    	
    	    	http.csrf().disable(); // We don't need CSRF for Mobile Code based authentication
-   	    	http.antMatcher(identityProperties.getAuthc().getPathPattern())
+   	    	http.antMatcher(authcProperties.getPathPattern())
    	    		.addFilterBefore(authenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
-   	    
-   	    	super.configure(http);
+
+   	    	super.configure(http, authcProperties.getCros());
+   	    	super.configure(http, authcProperties.getCsrf());
+   	    	super.configure(http, authcProperties.getHeaders());
+	    	super.configure(http);
    	    	
    	    }
    	    

@@ -49,7 +49,7 @@ public class IdentityCodeAuthenticationProcessingFilter extends AbstractAuthenti
 	private final ObjectMapper objectMapper;
 	
     public IdentityCodeAuthenticationProcessingFilter(ObjectMapper objectMapper) {
-    	super(new AntPathRequestMatcher("identity", "POST"));
+    	super(new AntPathRequestMatcher("/login/identity"));
 		this.objectMapper = objectMapper;
     }
 

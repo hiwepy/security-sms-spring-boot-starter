@@ -1,4 +1,4 @@
-# security-identity-spring-boot-starter
+# security-sms-spring-boot-starter
 security starter for spring boot
 
 ### 说明
@@ -12,7 +12,7 @@ security starter for spring boot
 ``` xml
 <dependency>
 	<groupId>${project.groupId}</groupId>
-	<artifactId>security-identity-spring-boot-starter</artifactId>
+	<artifactId>security-sms-spring-boot-starter</artifactId>
 	<version>${project.version}</version>
 </dependency>
 ```

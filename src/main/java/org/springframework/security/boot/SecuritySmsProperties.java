@@ -6,15 +6,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@ConfigurationProperties(prefix = SecurityIdentityProperties.PREFIX)
+@ConfigurationProperties(prefix = SecuritySmsProperties.PREFIX)
 @Getter
 @Setter
 @ToString
-public class SecurityIdentityProperties {
+public class SecuritySmsProperties {
 
-	public static final String PREFIX = "spring.security.identity";
+	public static final String PREFIX = "spring.security.sms";
 
-	/** Whether Enable JWT Authentication. */
+	/** Whether Enable SMS Authentication. */
 	private boolean enabled = false;
 
 }

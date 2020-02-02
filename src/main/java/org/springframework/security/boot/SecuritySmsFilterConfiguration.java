@@ -18,8 +18,8 @@ import org.springframework.security.boot.biz.authentication.captcha.CaptchaResol
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationEntryPoint;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationFailureHandler;
 import org.springframework.security.boot.biz.authentication.nested.MatchedAuthenticationSuccessHandler;
-import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationProcessingFilter;
-import org.springframework.security.boot.identity.authentication.IdentityCodeAuthenticationProvider;
+import org.springframework.security.boot.sms.authentication.SmsAuthenticationProcessingFilter;
+import org.springframework.security.boot.sms.authentication.SmsAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.core.session.SessionRegistry;
@@ -38,16 +38,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @AutoConfigureBefore({ SecurityFilterAutoConfiguration.class })
-@EnableConfigurationProperties({ SecurityIdentityProperties.class })
-public class SecurityIdentityFilterConfiguration {
+@EnableConfigurationProperties({ SecuritySmsProperties.class })
+public class SecuritySmsFilterConfiguration {
     
     @Configuration
-    @ConditionalOnProperty(prefix = SecurityIdentityProperties.PREFIX, value = "enabled", havingValue = "true")
-   	@EnableConfigurationProperties({ SecurityIdentityProperties.class, SecurityBizProperties.class })
+    @ConditionalOnProperty(prefix = SecuritySmsProperties.PREFIX, value = "enabled", havingValue = "true")
+   	@EnableConfigurationProperties({ SecuritySmsProperties.class, SecurityBizProperties.class })
     @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 4)
    	static class IdentityWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
     	
-    	private final SecurityIdentityAuthcProperties authcProperties;
+    	private final SecuritySmsAuthcProperties authcProperties;
     	
     	private final AuthenticationEntryPoint authenticationEntryPoint;
  	    private final AuthenticationSuccessHandler authenticationSuccessHandler;
@@ -65,9 +65,9 @@ public class SecurityIdentityFilterConfiguration {
    		public IdentityWebSecurityConfigurerAdapter(
    			
    				SecurityBizProperties bizProperties,
-   				SecurityIdentityAuthcProperties authcProperties,
+   				SecuritySmsAuthcProperties authcProperties,
 
-   				ObjectProvider<IdentityCodeAuthenticationProvider> authenticationProvider,
+   				ObjectProvider<SmsAuthenticationProvider> authenticationProvider,
    				ObjectProvider<AuthenticationManager> authenticationManagerProvider,
    				ObjectProvider<AuthenticationListener> authenticationListenerProvider,
    				ObjectProvider<MatchedAuthenticationEntryPoint> authenticationEntryPointProvider,
@@ -100,9 +100,9 @@ public class SecurityIdentityFilterConfiguration {
    			
    		}
    		   		
-   	    public IdentityCodeAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
+   	    public SmsAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
    	    	
-   			IdentityCodeAuthenticationProcessingFilter authenticationFilter = new IdentityCodeAuthenticationProcessingFilter(
+   			SmsAuthenticationProcessingFilter authenticationFilter = new SmsAuthenticationProcessingFilter(
    					objectMapper);
    			
    			/**

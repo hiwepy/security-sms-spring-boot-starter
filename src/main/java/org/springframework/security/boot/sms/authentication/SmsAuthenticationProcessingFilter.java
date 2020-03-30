@@ -71,7 +71,7 @@ public class SmsAuthenticationProcessingFilter extends AbstractAuthenticationPro
 			// Post && JSON
 			if(WebUtils.isObjectRequest(request)) {
 				
-				SmsRequest loginRequest = objectMapper.readValue(request.getReader(), SmsRequest.class);
+				SmsLoginRequest loginRequest = objectMapper.readValue(request.getReader(), SmsLoginRequest.class);
 		 		authRequest = this.authenticationToken( loginRequest.getMobile(), loginRequest.getCode());
 		 		
 			} else {

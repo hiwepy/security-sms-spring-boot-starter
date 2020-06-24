@@ -45,7 +45,7 @@ public class SecuritySmsFilterConfiguration {
     @ConditionalOnProperty(prefix = SecuritySmsProperties.PREFIX, value = "enabled", havingValue = "true")
    	@EnableConfigurationProperties({ SecuritySmsProperties.class, SecurityBizProperties.class })
     @Order(SecurityProperties.DEFAULT_FILTER_ORDER + 4)
-   	static class IdentityWebSecurityConfigurerAdapter extends SecurityBizConfigurerAdapter {
+   	static class IdentityWebSecurityConfigurerAdapter extends AbstractSecurityConfigurerAdapter {
     	
     	private final SecuritySmsAuthcProperties authcProperties;
     	

@@ -1,8 +1,9 @@
 package org.springframework.security.boot.sms.exception;
 
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.boot.biz.exception.AuthResponseCode;
+import org.springframework.security.boot.biz.exception.AuthenticationExceptionAdapter;
 
-public class SmsCodeExpiredException extends AuthenticationException {
+public class SmsCodeExpiredException extends AuthenticationExceptionAdapter {
 
 	// ~ Constructors
 	// ===================================================================================================
@@ -14,7 +15,7 @@ public class SmsCodeExpiredException extends AuthenticationException {
 	 * @param msg the detail message
 	 */
 	public SmsCodeExpiredException(String msg) {
-		super(msg);
+		super(AuthResponseCode.SC_AUTHZ_CODE_EXPIRED, msg);
 	}
 
 	/**
@@ -25,7 +26,7 @@ public class SmsCodeExpiredException extends AuthenticationException {
 	 * @param t   root cause
 	 */
 	public SmsCodeExpiredException(String msg, Throwable t) {
-		super(msg, t);
+		super(AuthResponseCode.SC_AUTHZ_CODE_EXPIRED, msg, t);
 	}
 
 }

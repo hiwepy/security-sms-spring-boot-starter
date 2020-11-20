@@ -25,19 +25,17 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.boot.biz.SpringSecurityBizMessageSource;
-import org.springframework.security.boot.biz.exception.AuthResponseCode;
-import org.springframework.security.boot.biz.exception.AuthenticationMethodNotSupportedException;
+import org.springframework.security.boot.biz.authentication.PostOnlyAuthenticationProcessingFilter;
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SmsAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class SmsAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	public static final String SPRING_SECURITY_FORM_MOBILE_KEY = "mobile";
@@ -45,7 +43,6 @@ public class SmsAuthenticationProcessingFilter extends AbstractAuthenticationPro
 
     private String mobileParameter = SPRING_SECURITY_FORM_MOBILE_KEY;
     private String codeParameter = SPRING_SECURITY_FORM_CODE_KEY;
-    private boolean postOnly = true;
 	private final ObjectMapper objectMapper;
 	
     public SmsAuthenticationProcessingFilter(ObjectMapper objectMapper) {
@@ -54,16 +51,8 @@ public class SmsAuthenticationProcessingFilter extends AbstractAuthenticationPro
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+    public Authentication doAttemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
-
-        if (isPostOnly() && !WebUtils.isPostRequest(request) ) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Authentication method not supported. Request method: " + request.getMethod());
-			}
-			throw new AuthenticationMethodNotSupportedException(messages.getMessage(AuthResponseCode.SC_AUTHC_METHOD_NOT_ALLOWED.getMsgKey(), new Object[] { request.getMethod() }, 
-					"Authentication method not supported. Request method:" + request.getMethod()));
-		}
         
         try {
 
@@ -145,14 +134,6 @@ public class SmsAuthenticationProcessingFilter extends AbstractAuthenticationPro
 
 	public void setCodeParameter(String codeParameter) {
 		this.codeParameter = codeParameter;
-	}
-
-	public boolean isPostOnly() {
-		return postOnly;
-	}
-
-	public void setPostOnly(boolean postOnly) {
-		this.postOnly = postOnly;
 	}
 
 }

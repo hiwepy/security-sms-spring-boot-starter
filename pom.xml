@@ -316,6 +316,7 @@
                 </activation>
             <properties>
                 <additionalparam>-Xdoclint:none</additionalparam>
+                <slf4j.version>2.0.18</slf4j.version>
             </properties>
         </profile>
         <profile>
@@ -474,7 +475,18 @@
                 <version>${spring-security-biz.version}</version>
             </dependency>
             
-        </dependencies>
+                <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+</dependencies>
     </dependencyManagement>
     
     <dependencies>
@@ -491,14 +503,14 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.13</version>
+            <version>${slf4j.version}</version>
         </dependency>
         
         <!-- For Slf4j Simple -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>2.0.13</version>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
         

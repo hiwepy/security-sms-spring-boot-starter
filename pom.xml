@@ -13,7 +13,7 @@
     <groupId>io.github.easy4j</groupId>
     <artifactId>security-sms-spring-boot-starter</artifactId>
     <description>Spring Boot Starter For Spring Security With SMS </description>
-    <version>3.5.x.20260527-SNAPSHOT</version>
+    <version>3.5.x.20260630-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/easy-4-java/${project.artifactId}</url>
     <packaging>jar</packaging>
@@ -410,6 +410,7 @@
     </profiles>
     
     <properties>
+        <java.version>17</java.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -422,8 +423,8 @@
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
         <maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
         <fastjson.version>1.2.75</fastjson.version>
-        <jwt-issuer.version>1.0.6.RELEASE</jwt-issuer.version>
-        <spring-security-biz.version>1.0.7.RELEASE</spring-security-biz.version>
+        <jwt-issuer.version>2.0.x.20260630-SNAPSHOT</jwt-issuer.version>
+        <spring-security-biz.version>3.5.x.20260630-SNAPSHOT</spring-security-biz.version>
                 <slf4j.version>2.0.18</slf4j.version>
     </properties>
     

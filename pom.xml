@@ -412,6 +412,7 @@
     </profiles>
     
     <properties>
+        <java.version>21</java.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -424,8 +425,8 @@
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
         <fastjson.version>1.2.75</fastjson.version>
-        <jwt-issuer.version>1.0.6.RELEASE</jwt-issuer.version>
-        <spring-security-biz.version>1.0.7.RELEASE</spring-security-biz.version>
+        <jwt-issuer.version>3.0.x.20260630-SNAPSHOT</jwt-issuer.version>
+        <spring-security-biz.version>4.1.x.20260630-SNAPSHOT</spring-security-biz.version>
     </properties>
     
     <dependencyManagement>

@@ -29,7 +29,7 @@ import org.springframework.security.boot.biz.authentication.PostOnlyAuthenticati
 import org.springframework.security.boot.utils.WebUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -46,7 +46,7 @@ public class SmsAuthenticationProcessingFilter extends PostOnlyAuthenticationPro
 	private final ObjectMapper objectMapper;
 	
     public SmsAuthenticationProcessingFilter(ObjectMapper objectMapper) {
-    	super(new AntPathRequestMatcher("/login/identity"));
+		super(PathPatternRequestMatcher.pathPattern("/login/identity"));
 		this.objectMapper = objectMapper;
     }
 

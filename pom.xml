@@ -491,8 +491,12 @@
     </dependencyManagement>
     
     <dependencies>
-        
-        
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- For Servlet Api -->
         <dependency>
             <groupId>jakarta.servlet</groupId>

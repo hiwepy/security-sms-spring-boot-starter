@@ -28,7 +28,7 @@ public class SmsAuthenticationToken extends AbstractAuthenticationToken {
     private Object credentials;
 
     public SmsAuthenticationToken(Object principal, String credentials) {
-        super(null);
+        super((Collection<? extends GrantedAuthority>) null);
         this.principal = principal;
         this.credentials = credentials;
         setAuthenticated(false);

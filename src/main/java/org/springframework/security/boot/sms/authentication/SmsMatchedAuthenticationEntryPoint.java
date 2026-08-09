@@ -32,6 +32,13 @@ import org.springframework.security.boot.utils.SecurityResponseUtils;
 import org.springframework.security.boot.utils.SubjectUtils;
 import org.springframework.security.core.AuthenticationException;
 
+/**
+ * Authentication entry point for Sms authentication errors.
+ * <p>Handles authentication exceptions by writing appropriate JSON error responses.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class SmsMatchedAuthenticationEntryPoint implements MatchedAuthenticationEntryPoint {
 	
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();

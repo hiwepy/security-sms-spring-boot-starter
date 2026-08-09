@@ -39,6 +39,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 @AutoConfigureBefore({ ServletWebSecurityAutoConfiguration.class })
 @EnableConfigurationProperties({ SecuritySmsProperties.class })
+/**
+ * Filter configuration for SecuritySms authentication.
+ * <p>Registers authentication filters and security filter chains.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class SecuritySmsFilterConfiguration {
     
     @Configuration

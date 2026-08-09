@@ -15,6 +15,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @AutoConfigureBefore(SecurityBizAutoConfiguration.class)
 @ConditionalOnProperty(prefix = SecuritySmsProperties.PREFIX, value = "enabled", havingValue = "true")
 @EnableConfigurationProperties({ SecurityBizProperties.class, SecuritySmsProperties.class })
+/**
+ * Auto-configuration for SecuritySms integration.
+ * <p>Registers the necessary beans when the feature is enabled.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class SecuritySmsAutoConfiguration{
 	
 	@Bean

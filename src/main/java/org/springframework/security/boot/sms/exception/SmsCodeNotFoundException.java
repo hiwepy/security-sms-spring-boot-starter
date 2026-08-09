@@ -3,6 +3,12 @@ package org.springframework.security.boot.sms.exception;
 import org.springframework.security.boot.biz.exception.AuthResponseCode;
 import org.springframework.security.boot.biz.exception.AuthenticationExceptionAdapter;
 
+/**
+ * Exception thrown for SmsCodeNotFound errors.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class SmsCodeNotFoundException extends AuthenticationExceptionAdapter {
 
 	// ~ Constructors

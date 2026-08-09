@@ -10,6 +10,14 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+/**
+ * Configuration properties.
+ * <p>Binds to the application property prefix and provides
+ * customizable settings.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class SecuritySmsProperties {
 
 	public static final String PREFIX = "spring.security.sms";

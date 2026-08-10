@@ -24,7 +24,7 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
  * Authentication token for Sms authentication.
  * <p>Carries the principal and credentials throughout the authentication flow.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class SmsAuthenticationToken extends AbstractAuthenticationToken {

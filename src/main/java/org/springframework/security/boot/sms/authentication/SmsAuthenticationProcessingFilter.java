@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Authentication processing filter for Sms authentication.
  * <p>Intercepts authentication requests and delegates to the authentication manager.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class SmsAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {

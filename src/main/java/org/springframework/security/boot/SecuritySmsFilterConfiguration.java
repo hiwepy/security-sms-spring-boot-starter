@@ -107,6 +107,12 @@ public class SecuritySmsFilterConfiguration {
    			
    		}
    		   		
+   	    /**
+   	     * authentication Processing Filter.
+   	     *
+   	     * @return the result
+   	     * @throws Exception if an error occurs
+   	     */
    	    public SmsAuthenticationProcessingFilter authenticationProcessingFilter() throws Exception {
    	    	
    			SmsAuthenticationProcessingFilter authenticationFilter = new SmsAuthenticationProcessingFilter(
@@ -134,6 +140,12 @@ public class SecuritySmsFilterConfiguration {
    	        return authenticationFilter;
    	    }
 
+		/**
+		 * configure.
+		 *
+		 * @param http the http
+		 * @throws Exception if an error occurs
+		 */
    	    @Override
 		public void configure(HttpSecurity http) throws Exception {
    	    	
@@ -148,6 +160,12 @@ public class SecuritySmsFilterConfiguration {
    	    	
    	    }
    	    
+	    /**
+	     * configure.
+	     *
+	     * @param web the web
+	     * @throws Exception if an error occurs
+	     */
    	    @Override
 	    public void configure(WebSecurity web) throws Exception {
 	    	super.configure(web);

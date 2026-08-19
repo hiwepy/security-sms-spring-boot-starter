@@ -25,11 +25,19 @@ import com.alibaba.fastjson.JSONObject;
 
 /**
  * Post认证请求失败后的处理实现
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
+ * @since 1.0.0
  */
 public class SmsMatchedAuthenticationFailureHandler implements MatchedAuthenticationFailureHandler {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	 
+	/**
+	 * Determines whether supports.
+	 *
+	 * @param e the e
+	 * @return the result
+	 */
 	@Override
 	public boolean supports(AuthenticationException e) {
 		return SubjectUtils.isAssignableFrom(e.getClass(), SmsCodeNotFoundException.class,
@@ -37,6 +45,15 @@ public class SmsMatchedAuthenticationFailureHandler implements MatchedAuthentica
 				SmsCodeInvalidException.class);
 	}
 	
+	/**
+	 * on Authentication Failure.
+	 *
+	 * @param request the request
+	 * @param response the response
+	 * @param e the e
+	 * @throws IOException if an error occurs
+	 * @throws ServletException if an error occurs
+	 */
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException e) throws IOException, ServletException {

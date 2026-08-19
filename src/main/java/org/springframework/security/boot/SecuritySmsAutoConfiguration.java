@@ -24,16 +24,33 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 public class SecuritySmsAutoConfiguration{
 	
+	/**
+	 * idc Matched Authentication Entry Point.
+	 *
+	 * @return the result
+	 */
 	@Bean
 	public SmsMatchedAuthenticationEntryPoint idcMatchedAuthenticationEntryPoint() {
 		return new SmsMatchedAuthenticationEntryPoint();
 	}
 	
+	/**
+	 * idc Matched Authentication Failure Handler.
+	 *
+	 * @return the result
+	 */
 	@Bean
 	public SmsMatchedAuthenticationFailureHandler idcMatchedAuthenticationFailureHandler() {
 		return new SmsMatchedAuthenticationFailureHandler();
 	}
 	 
+	/**
+	 * idc Code Authentication Provider.
+	 *
+	 * @param userDetailsService the user details service
+	 * @param passwordEncoder the password encoder
+	 * @return the result
+	 */
 	@Bean
 	public SmsAuthenticationProvider idcCodeAuthenticationProvider(
 			UserDetailsServiceAdapter userDetailsService, PasswordEncoder passwordEncoder) {

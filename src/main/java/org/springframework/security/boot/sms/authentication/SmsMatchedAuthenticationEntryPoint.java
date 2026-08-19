@@ -43,6 +43,12 @@ public class SmsMatchedAuthenticationEntryPoint implements MatchedAuthentication
 	
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
 	
+	/**
+	 * Determines whether supports.
+	 *
+	 * @param e the e
+	 * @return the result
+	 */
 	@Override
 	public boolean supports(AuthenticationException e) {
 		return SubjectUtils.isAssignableFrom(e.getClass(), SmsCodeNotFoundException.class,

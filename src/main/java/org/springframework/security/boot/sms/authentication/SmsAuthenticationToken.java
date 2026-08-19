@@ -34,6 +34,12 @@ public class SmsAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private Object credentials;
 
+    /**
+     * Constructs a new sms authentication token instance.
+     *
+     * @param principal the principal
+     * @param credentials the credentials
+     */
     public SmsAuthenticationToken(Object principal, String credentials) {
         super((Collection<? extends GrantedAuthority>) null);
         this.principal = principal;
@@ -41,6 +47,13 @@ public class SmsAuthenticationToken extends AbstractAuthenticationToken {
         setAuthenticated(false);
     }
     
+    /**
+     * Constructs a new sms authentication token instance.
+     *
+     * @param principal the principal
+     * @param credentials the credentials
+     * @param authorities the authorities
+     */
     public SmsAuthenticationToken(Object principal,  Object credentials, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
@@ -51,14 +64,30 @@ public class SmsAuthenticationToken extends AbstractAuthenticationToken {
     // ~ Methods
     // ========================================================================================================
 
+    /**
+     * Returns the credentials.
+     *
+     * @return the credentials
+     */
     public Object getCredentials() {
         return this.credentials;
     }
 
+    /**
+     * Returns the principal.
+     *
+     * @return the principal
+     */
     public Object getPrincipal() {
         return this.principal;
     }
 
+    /**
+     * Sets the authenticated.
+     *
+     * @param isAuthenticated the is authenticated
+     * @throws IllegalArgumentException if an error occurs
+     */
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
         if (isAuthenticated) {
             throw new IllegalArgumentException(
@@ -68,6 +97,10 @@ public class SmsAuthenticationToken extends AbstractAuthenticationToken {
         super.setAuthenticated(false);
     }
 
+    /**
+     * erase Credentials.
+     *
+     */
     @Override
     public void eraseCredentials() {
         super.eraseCredentials();

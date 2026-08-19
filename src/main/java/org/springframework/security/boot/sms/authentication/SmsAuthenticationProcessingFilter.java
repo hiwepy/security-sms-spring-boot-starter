@@ -45,18 +45,40 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SmsAuthenticationProcessingFilter extends PostOnlyAuthenticationProcessingFilter {
 
 	protected MessageSourceAccessor messages = SpringSecurityBizMessageSource.getAccessor();
+	/**
+	 * Constructs a new sms authentication processing filter instance.
+	 *
+	 * @param objectMapper the object mapper
+	 */
 	public static final String SPRING_SECURITY_FORM_MOBILE_KEY = "mobile";
+    /**
+     * Constructs a new sms authentication processing filter instance.
+     *
+     * @param objectMapper the object mapper
+     */
     public static final String SPRING_SECURITY_FORM_CODE_KEY = "code";
 
     private String mobileParameter = SPRING_SECURITY_FORM_MOBILE_KEY;
     private String codeParameter = SPRING_SECURITY_FORM_CODE_KEY;
 	private final ObjectMapper objectMapper;
 	
+    /**
+     * Constructs a new sms authentication processing filter instance.
+     *
+     * @param objectMapper the object mapper
+     */
     public SmsAuthenticationProcessingFilter(ObjectMapper objectMapper) {
 		super(PathPatternRequestMatcher.pathPattern("/login/identity"));
 		this.objectMapper = objectMapper;
     }
 
+    /**
+     * do Attempt Authentication.
+     *
+     * @param request the request
+     * @param response the response
+     * @return the result
+     */
     @Override
     public Authentication doAttemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
@@ -102,10 +124,22 @@ public class SmsAuthenticationProcessingFilter extends PostOnlyAuthenticationPro
 
     }
 
+    /**
+     * obtain Mobile.
+     *
+     * @param request the request
+     * @return the result
+     */
     protected String obtainMobile(HttpServletRequest request) {
         return request.getParameter(mobileParameter);
     }
 
+    /**
+     * obtain Code.
+     *
+     * @param request the request
+     * @return the result
+     */
     protected String obtainCode(HttpServletRequest request) {
         return request.getParameter(codeParameter);
     }
@@ -123,22 +157,49 @@ public class SmsAuthenticationProcessingFilter extends PostOnlyAuthenticationPro
 		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 	}
 	
+	/**
+	 * authentication Token.
+	 *
+	 * @param mobile the mobile
+	 * @param code the code
+	 * @return the result
+	 */
 	protected AbstractAuthenticationToken authenticationToken(String mobile, String code) {
 		return new SmsAuthenticationToken( mobile, code);
 	}
     
+	/**
+	 * Returns the mobile parameter.
+	 *
+	 * @return the mobile parameter
+	 */
 	public String getMobileParameter() {
 		return mobileParameter;
 	}
 
+	/**
+	 * Sets the mobile parameter.
+	 *
+	 * @param mobileParameter the mobile parameter
+	 */
 	public void setMobileParameter(String mobileParameter) {
 		this.mobileParameter = mobileParameter;
 	}
 
+	/**
+	 * Returns the code parameter.
+	 *
+	 * @return the code parameter
+	 */
 	public String getCodeParameter() {
 		return codeParameter;
 	}
 
+	/**
+	 * Sets the code parameter.
+	 *
+	 * @param codeParameter the code parameter
+	 */
 	public void setCodeParameter(String codeParameter) {
 		this.codeParameter = codeParameter;
 	}
